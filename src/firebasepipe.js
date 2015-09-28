@@ -13,7 +13,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 var angular2_1 = require('angular2/angular2');
-exports.ALLOWED_FIREBASE_EVENTS = ['value', 'child_added'];
+(function (ALLOWED_FIREBASE_EVENTS) {
+    ALLOWED_FIREBASE_EVENTS[ALLOWED_FIREBASE_EVENTS["value"] = 0] = "value";
+    ALLOWED_FIREBASE_EVENTS[ALLOWED_FIREBASE_EVENTS["child_added"] = 1] = "child_added";
+})(exports.ALLOWED_FIREBASE_EVENTS || (exports.ALLOWED_FIREBASE_EVENTS = {}));
+var ALLOWED_FIREBASE_EVENTS = exports.ALLOWED_FIREBASE_EVENTS;
+;
 //TODO: create new reference if input string changes
 //TODO: support once instead of on
 //TODO: handle different events differently (like child_added)
@@ -26,10 +31,22 @@ var FirebaseOnValuePipe = (function () {
         var _this = this;
         if (!this._fbRef) {
             this._fbRef = new Firebase(value);
-            this._fbRef.on(this._getEventFromArgs(args), function (snapshot) {
-                _this._latestValue = snapshot.val();
-                _this._cdRef.requestCheck();
-            });
+            var event_1 = this._getEventFromArgs(args);
+            if (ALLOWED_FIREBASE_EVENTS[event_1] === ALLOWED_FIREBASE_EVENTS.child_added) {
+                this._fbRef.on(event_1, function (snapshot) {
+                    // Wait to create array until value exists
+                    if (!_this._latestValue)
+                        _this._latestValue = [];
+                    _this._latestValue.push(snapshot.val());
+                    _this._cdRef.requestCheck();
+                });
+            }
+            else {
+                this._fbRef.on(event_1, function (snapshot) {
+                    _this._latestValue = snapshot.val();
+                    _this._cdRef.requestCheck();
+                });
+            }
             return null;
         }
         if (this._latestValue === this._latestReturnedValue) {
@@ -51,7 +68,7 @@ var FirebaseOnValuePipe = (function () {
         if (args[0] && args[0][0] === '"') {
             args[0] = args[0].replace(/"/g, '');
         }
-        if (args && exports.ALLOWED_FIREBASE_EVENTS.indexOf(args[0]) > -1) {
+        if (args && typeof ALLOWED_FIREBASE_EVENTS[args[0]] === 'number') {
             return args[0];
         }
         throw "Not a valid event to listen to: " + args[0] + ".\n      Please provide a valid event, such as \"child_added\", by adding it as an\n      argument to the pipe: \"value | firebase:child_added\".\n      See https://www.firebase.com/docs/web/api/query/on.html for supported events.";

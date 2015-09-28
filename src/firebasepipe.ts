@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, ON_PUSH, Inject, Pipe, View, WrappedValue, bind, bootstrap} from 'angular2/angular2';
 
-export const ALLOWED_FIREBASE_EVENTS = ['value', 'child_added'];
+export enum ALLOWED_FIREBASE_EVENTS {value, child_added};
 
 //TODO: create new reference if input string changes
 //TODO: support once instead of on
@@ -20,10 +20,21 @@ export class FirebaseOnValuePipe {
   transform(value:string, args:string[]):any {
     if (!this._fbRef) {
       this._fbRef = new Firebase(value);
-      this._fbRef.on(this._getEventFromArgs(args), snapshot => {
-        this._latestValue = snapshot.val();
-        this._cdRef.requestCheck();
-      })
+      let event = this._getEventFromArgs(args);
+      if (ALLOWED_FIREBASE_EVENTS[event] === ALLOWED_FIREBASE_EVENTS.child_added) {
+        this._fbRef.on(event, snapshot => {
+          // Wait to create array until value exists
+          if (!this._latestValue) this._latestValue = [];
+          this._latestValue.push(snapshot.val());
+          this._cdRef.requestCheck();
+        });
+      } else {
+        this._fbRef.on(event, snapshot => {
+          this._latestValue = snapshot.val();
+          this._cdRef.requestCheck();
+        });
+      }
+
       return null;
     }
 
@@ -47,7 +58,7 @@ export class FirebaseOnValuePipe {
     if (args[0] && args[0][0] === '"') {
       args[0] = args[0].replace(/"/g, '');
     }
-    if (args && ALLOWED_FIREBASE_EVENTS.indexOf(args[0]) > -1) {
+    if (args && typeof ALLOWED_FIREBASE_EVENTS[args[0]] === 'number') {
       return args[0];
     }
     throw `Not a valid event to listen to: ${args[0]}.
