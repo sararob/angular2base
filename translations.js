@@ -58,5 +58,9 @@ var translations = {
 	"14": {
 		"american": "eggplant",
 		"british": "aubergine"
+	},
+	"15": {
+		"american": "trash",
+		"british": "rubbish"
 	}
 }

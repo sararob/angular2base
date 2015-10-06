@@ -1,0 +1,56 @@
+body {
+	font-family: "Helvetica";
+}
+
+.twitter {
+	padding: 0.5em 1em;
+	background-color: #50b1ff;
+	border: none;
+	color: #FFF;
+	font-family: 'HelveticaNeue-Light';
+	font-weight: normal;
+	border-radius: 3px;
+	font-size: 17px;
+	cursor: pointer;
+}
+
+.messages-list {
+	list-style-type: none;
+}
+
+.messages-list li {
+	margin: 7px;
+}
+
+.radio {
+	float: right;
+}
+
+.pref {
+	margin: 4px;
+}
+
+.message-input {
+	margin: 30px 0px 30px 45px;
+}
+
+.message-input button {
+	padding: 0.5em 1em;
+	background-color: #0143A3;
+	border: none;
+	color: #FFF;
+	font-family: 'HelveticaNeue-Light';
+	font-weight: normal;
+	border-radius: 3px;
+	font-size: 17px;
+	height: 43px;
+	margin-left: 12px;
+	cursor: pointer;
+}
+
+.message-input input {
+	padding: 1em;
+	border: 1px solid #ccc;
+	height: 11px;
+	font-size: 15px;
+}

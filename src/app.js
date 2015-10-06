@@ -12,28 +12,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 /// <reference path="../node_modules/angular2/bundles/typings/angular2/angular2.d.ts" />
 var angular2_1 = require('angular2/angular2');
 var firebasepipe_1 = require('./firebasepipe');
-var TodoList = (function () {
-    function TodoList() {
+var MessageList = (function () {
+    function MessageList() {
         var self = this;
-        self.todos = {};
+        self.messages = {};
         self.langPref = "british";
-        self.todoDatabase = new Firebase("https://angular-connect.firebaseio.com/messages");
-        self.translations = new Firebase("https://angular-connect.firebaseio.com/translations");
+        self.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
         self.authData = null;
-        self.todoDatabase.on("child_added", function (snapshot) {
+        self.messagesRef.on("child_added", function (snapshot) {
             var key = snapshot.key();
-            self.todos[key] = snapshot.val();
+            self.messages[key] = snapshot.val();
         });
-        self.todoDatabase.onAuth(function (user) {
+        self.messagesRef.onAuth(function (user) {
             if (user) {
                 self.authData = user;
             }
         });
     }
-    TodoList.prototype.keys = function () {
-        return Object.keys(this.todos);
+    MessageList.prototype.keys = function () {
+        return Object.keys(this.messages);
     };
-    TodoList.prototype.translate = function (message) {
+    MessageList.prototype.translate = function (message) {
         var translatedString = message;
         var startLang = this.langPref;
         var endLang;
@@ -56,40 +55,40 @@ var TodoList = (function () {
         }
         return translatedString;
     };
-    TodoList.prototype.getLanguage = function ($event) {
+    MessageList.prototype.getLanguage = function ($event) {
         var selectedLanguage = $event.target.value;
         this.langPref = selectedLanguage;
     };
-    TodoList.prototype.addMessage = function (message, user) {
+    MessageList.prototype.addMessage = function (message, user) {
         var newString = this.translate(message);
-        this.todoDatabase.push({
+        this.messagesRef.push({
             name: user,
             text: newString
         });
     };
-    TodoList.prototype.doneTyping = function ($event) {
+    MessageList.prototype.doneTyping = function ($event) {
         if ($event.which === 13) {
             this.addMessage($event.target.value);
             $event.target.value = null;
         }
     };
-    TodoList.prototype.authWithTwitter = function () {
-        this.todoDatabase.authWithOAuthPopup("twitter", function (error, user) {
+    MessageList.prototype.authWithTwitter = function () {
+        this.messagesRef.authWithOAuthPopup("twitter", function (error, user) {
             this.authData = user;
         });
     };
-    TodoList = __decorate([
+    MessageList = __decorate([
         angular2_1.Component({
             selector: 'display'
         }),
         angular2_1.View({
-            template: "\n\t  \t<div class=\"toolbar\">\n\t\t  <button class=\"md-raised md-primary\" (click)=\"authWithTwitter()\">Sign in with Twitter</button>\n\t\t  <span flex></span>\n\t\t  <span class=\"radio\">\n\t\t\t  American <input type=\"radio\" value=\"american\" name=\"pref\" (click)=\"getLanguage($event)\")/>\n\t\t\t  British <input type=\"radio\" value=\"british\" name=\"pref\" checked=\"checked\" (click)=\"getLanguage($event)\")/>\n\t\t  </span>\n\t\t</div>\n\t  <div class=\"message-input\">\n\t  \t<input #todotext>\n\t  \t<button (click)=\"addMessage(todotext.value, authData.twitter.username)\">Add Message</button>\n\t  </div>\n\t  <ul>\n\t  \t<li <li *ng-for=\"#key of 'https://angular-connect.firebaseio.com/messages' | firebasevalue:'child_added'\">\n\t  \t\t<strong>{{ key.name }}</strong>: {{ key.text }}\n\t  \t</li>\n\t  </ul>\n\t",
+            template: "\n\t  \t<div>\n\t\t  <button class=\"twitter\" (click)=\"authWithTwitter()\">Sign in with Twitter</button>\n\t\t  <span class=\"radio\">\n\t\t\t  <span class=\"pref\">American English <input type=\"radio\" value=\"american\" name=\"pref\" (click)=\"getLanguage($event)\")/></span>\n\t\t\t  <span class=\"pref\">British English <input type=\"radio\" value=\"british\" name=\"pref\" checked=\"checked\" (click)=\"getLanguage($event)\")/></span>\n\t\t  </span>\n\t\t</div>\n\t  <div class=\"message-input\">\n\t  \t<input #messagetext>\n\t  \t<button (click)=\"addMessage(messagetext.value, authData.twitter.username)\">Add Message</button>\n\t  </div>\n\t  <ul class=\"messages-list\">\n\t  \t<li <li *ng-for=\"#key of 'https://angular-connect.firebaseio.com/messages' | firebaseevent:'child_added'\">\n\t  \t\t<strong>{{ key.name }}</strong>: {{ key.text }}\n\t  \t</li>\n\t  </ul>\n\t",
             directives: [angular2_1.NgFor],
-            pipes: [firebasepipe_1.FirebaseOnValuePipe]
+            pipes: [firebasepipe_1.FirebaseEventPipe]
         }), 
         __metadata('design:paramtypes', [])
-    ], TodoList);
-    return TodoList;
+    ], MessageList);
+    return MessageList;
 })();
-angular2_1.bootstrap(TodoList);
+angular2_1.bootstrap(MessageList);
 //# sourceMappingURL=app.js.map

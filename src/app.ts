@@ -1,58 +1,55 @@
 /// <reference path="../node_modules/angular2/bundles/typings/angular2/angular2.d.ts" />
 import {Component, View, bootstrap, NgFor} from 'angular2/angular2';
-import {FirebaseOnValuePipe} from './firebasepipe';
+import {FirebaseEventPipe} from './firebasepipe';
 @Component({
 	selector: 'display'
 })
 @View({
 	template: `
-	  	<div class="toolbar">
-		  <button class="md-raised md-primary" (click)="authWithTwitter()">Sign in with Twitter</button>
-		  <span flex></span>
+	  	<div>
+		  <button class="twitter" (click)="authWithTwitter()">Sign in with Twitter</button>
 		  <span class="radio">
-			  American <input type="radio" value="american" name="pref" (click)="getLanguage($event)")/>
-			  British <input type="radio" value="british" name="pref" checked="checked" (click)="getLanguage($event)")/>
+			  <span class="pref">American English <input type="radio" value="american" name="pref" (click)="getLanguage($event)")/></span>
+			  <span class="pref">British English <input type="radio" value="british" name="pref" checked="checked" (click)="getLanguage($event)")/></span>
 		  </span>
 		</div>
 	  <div class="message-input">
-	  	<input #todotext>
-	  	<button (click)="addMessage(todotext.value, authData.twitter.username)">Add Message</button>
+	  	<input #messagetext>
+	  	<button (click)="addMessage(messagetext.value, authData.twitter.username)">Add Message</button>
 	  </div>
-	  <ul>
-	  	<li <li *ng-for="#key of 'https://angular-connect.firebaseio.com/messages' | firebasevalue:'child_added'">
+	  <ul class="messages-list">
+	  	<li <li *ng-for="#key of 'https://angular-connect.firebaseio.com/messages' | firebaseevent:'child_added'">
 	  		<strong>{{ key.name }}</strong>: {{ key.text }}
 	  	</li>
 	  </ul>
 	`,
 	directives: [NgFor],
-  pipes: [FirebaseOnValuePipe]
+  	pipes: [FirebaseEventPipe]
 })
 
-class TodoList {
-	todos: Dictionary;
-	todoDatabase: Firebase;
-	translations: Firebase;
+class MessageList {
+	messages: Dictionary;
+	messagesRef: Firebase;
 	authData: Object;
 	langPref: string;
 	constructor() {
 		var self = this;
-		self.todos = {};
+		self.messages = {};
 		self.langPref = "british";
-		self.todoDatabase = new Firebase("https://angular-connect.firebaseio.com/messages");
-		self.translations = new Firebase("https://angular-connect.firebaseio.com/translations")
+		self.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
 		self.authData = null;
-		self.todoDatabase.on("child_added", function(snapshot) {
+		self.messagesRef.on("child_added", function(snapshot) {
 			var key = snapshot.key();
-			self.todos[key] = snapshot.val();
+			self.messages[key] = snapshot.val();
 		});
-		self.todoDatabase.onAuth(function(user) {
+		self.messagesRef.onAuth(function(user) {
 			if (user) {
 				self.authData = user;
 			}
 		});
 	}
 	keys(): Array<string> {
-		return Object.keys(this.todos);
+		return Object.keys(this.messages);
 	}
 	translate(message: string): string {
 		var translatedString = message;
@@ -83,7 +80,7 @@ class TodoList {
 	}
 	addMessage(message: string, user: string) {
 		var newString = this.translate(message);
-		this.todoDatabase.push({
+		this.messagesRef.push({
 			name: user,
 			text: newString
 		});
@@ -95,7 +92,7 @@ class TodoList {
 		}
 	}
 	authWithTwitter() {
-		this.todoDatabase.authWithOAuthPopup("twitter", function(error, user) {
+		this.messagesRef.authWithOAuthPopup("twitter", function(error, user) {
 			this.authData = user;
 		});
 	}
@@ -105,4 +102,4 @@ interface Dictionary {
 	[ index: string ]: string
 }
 
-bootstrap(TodoList);
+bootstrap(MessageList);

@@ -7,9 +7,9 @@ export enum ALLOWED_FIREBASE_EVENTS {value, child_added};
 //TODO: handle different events differently (like child_added)
 //TODO: Should event be allowed to change?
 @Pipe({
-  name: 'firebasevalue'
+  name: 'firebaseevent'
 })
-export class FirebaseOnValuePipe {
+export class FirebaseEventPipe {
   private _cdRef:ChangeDetectorRef;
   private _fbRef:Firebase;
   private _latestValue:any;

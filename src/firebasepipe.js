@@ -23,11 +23,11 @@ var ALLOWED_FIREBASE_EVENTS = exports.ALLOWED_FIREBASE_EVENTS;
 //TODO: support once instead of on
 //TODO: handle different events differently (like child_added)
 //TODO: Should event be allowed to change?
-var FirebaseOnValuePipe = (function () {
-    function FirebaseOnValuePipe(cdRef) {
+var FirebaseEventPipe = (function () {
+    function FirebaseEventPipe(cdRef) {
         this._cdRef = cdRef;
     }
-    FirebaseOnValuePipe.prototype.transform = function (value, args) {
+    FirebaseEventPipe.prototype.transform = function (value, args) {
         var _this = this;
         if (!this._fbRef) {
             this._fbRef = new Firebase(value);
@@ -58,12 +58,12 @@ var FirebaseOnValuePipe = (function () {
         }
         return null;
     };
-    FirebaseOnValuePipe.prototype.onDestroy = function () {
+    FirebaseEventPipe.prototype.onDestroy = function () {
         if (this._fbRef) {
             this._fbRef.off();
         }
     };
-    FirebaseOnValuePipe.prototype._getEventFromArgs = function (args) {
+    FirebaseEventPipe.prototype._getEventFromArgs = function (args) {
         //TODO(jeffbcross): fix this when args parsing doesn't add stupid quotes
         if (args[0] && args[0][0] === '"') {
             args[0] = args[0].replace(/"/g, '');
@@ -73,14 +73,14 @@ var FirebaseOnValuePipe = (function () {
         }
         throw "Not a valid event to listen to: " + args[0] + ".\n      Please provide a valid event, such as \"child_added\", by adding it as an\n      argument to the pipe: \"value | firebase:child_added\".\n      See https://www.firebase.com/docs/web/api/query/on.html for supported events.";
     };
-    FirebaseOnValuePipe = __decorate([
+    FirebaseEventPipe = __decorate([
         angular2_1.Pipe({
-            name: 'firebasevalue'
+            name: 'firebaseevent'
         }),
         __param(0, angular2_1.Inject(angular2_1.ChangeDetectorRef)), 
         __metadata('design:paramtypes', [Object])
-    ], FirebaseOnValuePipe);
-    return FirebaseOnValuePipe;
+    ], FirebaseEventPipe);
+    return FirebaseEventPipe;
 })();
-exports.FirebaseOnValuePipe = FirebaseOnValuePipe;
+exports.FirebaseEventPipe = FirebaseEventPipe;
 //# sourceMappingURL=firebasepipe.js.map
