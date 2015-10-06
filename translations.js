@@ -1,46 +1,62 @@
 var translations = {
 	"0": {
-		"american": "a little bit",
-		"british": "a spot"
-	},
-	"1": {
 		"american": "aluminum",
 		"british": "aluminium"
+	},
+	"1": {
+		"american": "cookie",
+		"british": "biscuit"
 	},
 	"2": {
 		"american": "biscuit",
 		"british": "scone"
 	},
 	"3": {
-		"american": "shoes",
-		"british": "boots"
+		"american": "pants",
+		"british": "trousers"
 	},
 	"4": {
+		"american": "underpants",
+		"british": "pants"
+	},
+	"5": {
 		"american": "apartment",
 		"british": "flat"
 	},
-	"5": {
+	"6": {
 		"american": "elevator",
 		"british": "lift"
 	},
-	"6": {
+	"7": {
 		"american": "line",
 		"british": "queue"
 	},
-	"7": {
+	"8": {
 		"american": "hood",
 		"british": "bonnet"
 	},
-	"8": {
+	"9": {
+		"american": "trunch",
+		"british": "boot"
+	},
+	"10": {
 		"american": "theater",
 		"british": "theatre"
 	},
-	"9": {
+	"11": {
 		"american": "vacation",
 		"british": "holiday"
 	},
-	"10": {
+	"12": {
 		"american": "mail",
 		"british": "post"
+	},
+	"13": {
+		"american": "arugula",
+		"british": "rocket"
+	},
+	"14": {
+		"american": "eggplant",
+		"british": "aubergine"
 	}
 }
