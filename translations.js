@@ -36,7 +36,7 @@ var translations = {
 		"british": "bonnet"
 	},
 	"9": {
-		"american": "trunch",
+		"american": "trunk",
 		"british": "boot"
 	},
 	"10": {
