@@ -14,6 +14,12 @@ body {
 	cursor: pointer;
 }
 
+.logged-in {
+	display: inline-block;
+	margin: 5px;
+	color: #50b1ff;
+}
+
 .messages-list {
 	list-style-type: none;
 }

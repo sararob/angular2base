@@ -7,19 +7,18 @@ import {FirebaseEventPipe} from './firebasepipe';
 @View({
 	template: `
 	  	<div>
-		  <button class="twitter" (click)="authWithTwitter()">Sign in with Twitter</button>
+		  <button [hidden]="loggedIn" class="twitter" (click)="authWithTwitter()">Sign in with Twitter</button>
 		  <span class="radio">
 			  <span class="pref">American English <input type="radio" value="american" name="pref" (click)="getLanguage($event)")/></span>
 			  <span class="pref">British English <input type="radio" value="british" name="pref" checked="checked" (click)="getLanguage($event)")/></span>
 		  </span>
 		</div>
 	  <div class="message-input">
-	  	<input #messagetext>
-	  	<button (click)="addMessage(messagetext.value, authData.twitter.username)">Add Message</button>
+	  	<input [hidden]="!loggedIn" #messagetext (keyup)="doneTyping($event)" placeholder="Enter a message...">
 	  </div>
 	  <ul class="messages-list">
-	  	<li <li *ng-for="#key of 'https://angular-connect.firebaseio.com/messages' | firebaseevent:'child_added'">
-	  		<strong>{{ key.name }}</strong>: {{ key.text }}
+	  	<li *ng-for="#key of 'https://angular-connect.firebaseio.com/messages' | firebaseevent:'child_added'">
+	  		<strong>{{key.name}}</strong>: {{key.text}}
 	  	</li>
 	  </ul>
 	`,
@@ -32,12 +31,16 @@ class MessageList {
 	messagesRef: Firebase;
 	authData: Object;
 	langPref: string;
+	loggedIn: boolean;
+	translations: Object;
 	constructor() {
 		var self = this;
 		self.messages = {};
 		self.langPref = "british";
+		self.messagesArray = [];
 		self.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
 		self.authData = null;
+		self.loggedIn = false;
 		self.messagesRef.on("child_added", function(snapshot) {
 			var key = snapshot.key();
 			self.messages[key] = snapshot.val();
@@ -45,6 +48,7 @@ class MessageList {
 		self.messagesRef.onAuth(function(user) {
 			if (user) {
 				self.authData = user;
+				self.loggedIn = true;
 			}
 		});
 	}
@@ -78,17 +82,21 @@ class MessageList {
 		var selectedLanguage = $event.target.value;
 		this.langPref = selectedLanguage;
 	}
-	addMessage(message: string, user: string) {
-		var newString = this.translate(message);
-		this.messagesRef.push({
-			name: user,
-			text: newString
-		});
-	}
 	doneTyping($event) {
-		if ($event.which === 13) {
-			this.addMessage($event.target.value);
-			$event.target.value = null;
+	  if($event.which === 13) {
+	    this.addMessage($event.target.value);
+	    $event.target.value = null;
+	  }
+	}
+	addMessage(message: string) {
+		var newString = this.translate(message);
+		if (this.authData) {
+			this.messagesRef.push({
+				name: this.authData.twitter.username,
+				text: newString
+			});
+		} else {
+			alert("You must log in with Twitter to post!");
 		}
 	}
 	authWithTwitter() {
