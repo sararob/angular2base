@@ -62,5 +62,9 @@ var translations = {
 	"15": {
 		"american": "trash",
 		"british": "rubbish"
-	}
+	},
+  "16": {
+    "american": "hello",
+    "british": "hello, gov'nuh"
+  }
 }
