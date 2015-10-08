@@ -1,8 +1,14 @@
-2. Add Firebase
+2. Add Firebase + Firebase Pipe
+
+	import {FirebaseEventPipe} from './firebasepipe';
+
+	pipes: [FirebaseEventPipe]
 
 	messagesRef: Firebase;
 
 	self.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
+
+
 
 3. Add authentication:
 
@@ -31,6 +37,8 @@ Add onAuth to constructor() and demo authenticating:
 		}
 	});
 
+Add [hidden]="!loggedIn" to <input>
+
 4. Store chat messages in Firebase. Change addMessage function to push() username and message data to Firebase:
 
 	if (this.authData) {
@@ -42,23 +50,7 @@ Add onAuth to constructor() and demo authenticating:
 		alert("You must log in with Twitter to post!");
 	}
 
-5. Use the Firebase pipe to sync data:
-
-	import {FirebaseEventPipe} from './firebasepipe';
-	pipes: [FirebaseEventPipe]
-
-Store all of the messages in a dictionary when they're synced from Firebase:
-
-	messages: Dictionary;
-
-Add a child_added listener to add messages from Firebase to our local Dictionary:
-
-	self.messagesRef.on("child_added", function(snapshot) {
-		var key = snapshot.key();
-		self.messages[key] = snapshot.val();
-	});
-
-Add the Firebase pipe!
+5. Add the Firebase pipe to our template!
 
   	<li *ng-for="#key of 'https://angular-connect.firebaseio.com/messages' | firebaseevent:'child_added'">
   		<strong>{{key.name}}</strong>: {{key.text}}
@@ -97,21 +89,18 @@ import {FirebaseEventPipe} from './firebasepipe';
 })
 
 class MessageList {
-	messages: Dictionary;
 	messagesRef: Firebase;
 	authData: Object;
 	langPref: string;
 	loggedIn: boolean;
+	translations: Object;
 	constructor() {
 		var self = this;
 		self.messages = {};
 		self.langPref = "british";
+		self.messagesArray = [];
 		self.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
 		self.authData = null;
-		self.messagesRef.on("child_added", function(snapshot) {
-			var key = snapshot.key();
-			self.messages[key] = snapshot.val();
-		});
 		self.loggedIn = false;
 		self.messagesRef.onAuth(function(user) {
 			if (user) {
@@ -119,9 +108,6 @@ class MessageList {
 				self.loggedIn = true;
 			}
 		});
-	}
-	keys(): Array<string> {
-		return Object.keys(this.messages);
 	}
 	translate(message: string): string {
 		var translatedString = message;
@@ -179,10 +165,6 @@ interface Dictionary {
 }
 
 bootstrap(MessageList);
-
----
-
-6. Firebase deploy
 
 
 
