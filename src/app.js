@@ -14,17 +14,14 @@ var angular2_1 = require('angular2/angular2');
 var firebasepipe_1 = require('./firebasepipe');
 var MessageList = (function () {
     function MessageList() {
-        var self = this;
-        self.messages = {};
-        self.langPref = "british";
-        self.messagesArray = [];
-        self.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
-        self.authData = null;
-        self.loggedIn = false;
-        self.messagesRef.onAuth(function (user) {
+        var _this = this;
+        this.messages = {};
+        this.langPref = "british";
+        this.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
+        this.messagesRef.onAuth(function (user) {
             if (user) {
-                self.authData = user;
-                self.loggedIn = true;
+                _this.authData = user;
+                _this.loggedIn = true;
             }
         });
     }
@@ -70,12 +67,17 @@ var MessageList = (function () {
             });
         }
         else {
-            alert("You must log in with Twitter to post!");
+            console.log("You must login to post");
         }
     };
     MessageList.prototype.authWithTwitter = function () {
         this.messagesRef.authWithOAuthPopup("twitter", function (error, user) {
-            this.authData = user;
+            if (error) {
+                console.log(error);
+            }
+            else if (user) {
+                this.authData = user;
+            }
         });
     };
     MessageList = __decorate([
@@ -83,7 +85,7 @@ var MessageList = (function () {
             selector: 'display'
         }),
         angular2_1.View({
-            template: "\n\t  \t<div>\n\t\t  <button [hidden]=\"loggedIn\" class=\"twitter\" (click)=\"authWithTwitter()\">Sign in with Twitter</button>\n\t\t  <span class=\"radio\">\n\t\t\t  <span class=\"pref\">American English <input type=\"radio\" value=\"american\" name=\"pref\" (click)=\"getLanguage($event)\")/></span>\n\t\t\t  <span class=\"pref\">British English <input type=\"radio\" value=\"british\" name=\"pref\" checked=\"checked\" (click)=\"getLanguage($event)\")/></span>\n\t\t  </span>\n\t\t</div>\n\t  <div class=\"message-input\">\n\t  \t<input [hidden]=\"!loggedIn\" #messagetext (keyup)=\"doneTyping($event)\" placeholder=\"Enter a message...\">\n\t  </div>\n\t  <ul class=\"messages-list\">\n\t  \t<li *ng-for=\"#key of 'https://angular-connect.firebaseio.com/messages' | firebaseevent:'child_added'\">\n\t  \t\t<strong>{{key.name}}</strong>: {{key.text}}\n\t  \t</li>\n\t  </ul>\n\t",
+            template: "\n\t  \t<div>\n\t\t  <button [hidden]=\"loggedIn\" class=\"twitter\" (click)=\"authWithTwitter()\">Sign in with Twitter</button>\n\t\t  <span class=\"radio\">\n\t\t\t  <span class=\"pref\">American English <input type=\"radio\" value=\"american\" name=\"pref\" (click)=\"getLanguage($event)\")/></span>\n\t\t\t  <span class=\"pref\">British English <input type=\"radio\" value=\"british\" name=\"pref\" checked=\"checked\" (click)=\"getLanguage($event)\")/></span>\n\t\t  </span>\n\t\t</div>\n\t  <div class=\"message-input\">\n\t  \t<input [hidden]=\"!loggedIn\" #messagetext (keyup)=\"doneTyping($event)\" placeholder=\"Enter a message...\">\n\t  </div>\n\t  <ul class=\"messages-list\">\n\t\t  <li *ng-for=\"#key of 'https://angular-connect.firebaseio.com/messages' | firebaseevent: 'child_added'\">\n\t\t  \t<strong>{{key.name}}</strong>: {{key.text}}\n\t\t  </li>\n\t  </ul>\n\t",
             directives: [angular2_1.NgFor],
             pipes: [firebasepipe_1.FirebaseEventPipe]
         }), 

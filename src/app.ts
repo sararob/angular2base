@@ -17,33 +17,29 @@ import {FirebaseEventPipe} from './firebasepipe';
 	  	<input [hidden]="!loggedIn" #messagetext (keyup)="doneTyping($event)" placeholder="Enter a message...">
 	  </div>
 	  <ul class="messages-list">
-	  	<li *ng-for="#key of 'https://angular-connect.firebaseio.com/messages' | firebaseevent:'child_added'">
-	  		<strong>{{key.name}}</strong>: {{key.text}}
-	  	</li>
+		  <li *ng-for="#key of 'https://angular-connect.firebaseio.com/messages' | firebaseevent: 'child_added'">
+		  	<strong>{{key.name}}</strong>: {{key.text}}
+		  </li>
 	  </ul>
 	`,
 	directives: [NgFor],
-  	pipes: [FirebaseEventPipe]
+	pipes: [FirebaseEventPipe]
 })
 
 class MessageList {
-	messagesRef: Firebase;
 	authData: Object;
 	langPref: string;
 	loggedIn: boolean;
 	translations: Object;
+	messagesRef: Firebase;
 	constructor() {
-		var self = this;
-		self.messages = {};
-		self.langPref = "british";
-		self.messagesArray = [];
-		self.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
-		self.authData = null;
-		self.loggedIn = false;
-		self.messagesRef.onAuth(function(user) {
+		this.messages = {};
+		this.langPref = "british";
+		this.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
+		this.messagesRef.onAuth((user) => {
 			if (user) {
-				self.authData = user;
-				self.loggedIn = true;
+				this.authData = user;
+				this.loggedIn = true;
 			}
 		});
 	}
@@ -88,18 +84,17 @@ class MessageList {
 				text: newString
 			});
 		} else {
-			alert("You must log in with Twitter to post!");
+			console.log("You must login to post");
 		}
 	}
 	authWithTwitter() {
 		this.messagesRef.authWithOAuthPopup("twitter", function(error, user) {
-			this.authData = user;
+			if (error) {
+				console.log(error);
+			} else if (user) {
+				this.authData = user;
+			}
 		});
 	}
 }
-
-interface Dictionary {
-	[ index: string ]: string
-}
-
 bootstrap(MessageList);
