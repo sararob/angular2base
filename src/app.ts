@@ -27,7 +27,6 @@ import {FirebaseEventPipe} from './firebasepipe';
 })
 
 class MessageList {
-	messages: Dictionary;
 	messagesRef: Firebase;
 	authData: Object;
 	langPref: string;
@@ -41,19 +40,12 @@ class MessageList {
 		self.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
 		self.authData = null;
 		self.loggedIn = false;
-		self.messagesRef.on("child_added", function(snapshot) {
-			var key = snapshot.key();
-			self.messages[key] = snapshot.val();
-		});
 		self.messagesRef.onAuth(function(user) {
 			if (user) {
 				self.authData = user;
 				self.loggedIn = true;
 			}
 		});
-	}
-	keys(): Array<string> {
-		return Object.keys(this.messages);
 	}
 	translate(message: string): string {
 		var translatedString = message;

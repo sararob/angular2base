@@ -21,10 +21,6 @@ var MessageList = (function () {
         self.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
         self.authData = null;
         self.loggedIn = false;
-        self.messagesRef.on("child_added", function (snapshot) {
-            var key = snapshot.key();
-            self.messages[key] = snapshot.val();
-        });
         self.messagesRef.onAuth(function (user) {
             if (user) {
                 self.authData = user;
@@ -32,9 +28,6 @@ var MessageList = (function () {
             }
         });
     }
-    MessageList.prototype.keys = function () {
-        return Object.keys(this.messages);
-    };
     MessageList.prototype.translate = function (message) {
         var translatedString = message;
         var startLang = this.langPref;
