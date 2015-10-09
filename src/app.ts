@@ -88,13 +88,7 @@ class MessageList {
 		}
 	}
 	authWithTwitter() {
-		this.messagesRef.authWithOAuthPopup("twitter", function(error, user) {
-			if (error) {
-				console.log(error);
-			} else if (user) {
-				this.authData = user;
-			}
-		});
+		this.messagesRef.authWithOAuthPopup("twitter", () => {});
 	}
 }
 bootstrap(MessageList);

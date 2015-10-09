@@ -66,5 +66,29 @@ var translations = {
   "16": {
     "american": "hello",
     "british": "hello, gov'nuh"
+  },
+  "17": {
+    "american": "center",
+    "british": "centre"
+  },
+  "18": {
+    "american": "neighborhood",
+    "british": "neighbourhood"
+  },
+  "19": {
+    "american": "color",
+    "british": "colour"
+  },
+  "20": {
+    "american": "program",
+    "british": "programme"
+  },
+  "21": {
+    "american": "traveling",
+    "british": "travelling"
+  },
+  "22": {
+    "american": "organize",
+    "british": "organise"
   }
 }

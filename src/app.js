@@ -71,14 +71,7 @@ var MessageList = (function () {
         }
     };
     MessageList.prototype.authWithTwitter = function () {
-        this.messagesRef.authWithOAuthPopup("twitter", function (error, user) {
-            if (error) {
-                console.log(error);
-            }
-            else if (user) {
-                this.authData = user;
-            }
-        });
+        this.messagesRef.authWithOAuthPopup("twitter", function () { });
     };
     MessageList = __decorate([
         angular2_1.Component({
