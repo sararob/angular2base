@@ -1,1 +1,0 @@
-{"version":3,"file":"event_deserializer.js","sourceRoot":"./","sources":["angular2/src/web-workers/worker/event_deserializer.ts"],"names":["deserializeGenericEvent"],"mappings":"AAIA,AAFA,yCAAyC;AACzC,4CAA4C;wCACJ,eAAuC;IAE7EA,MAAMA,CAACA,eAAeA,CAACA;AACzBA,CAACA"}
