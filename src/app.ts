@@ -8,14 +8,14 @@ import {translations} from './translations';
 @View({
 	template: `
 	  	<div>
-		  <button [hidden]="loggedIn" class="twitter" (click)="authWithTwitter()">Sign in with Twitter</button>
+		  <button [hidden]="isLoggedIn" class="twitter" (click)="authWithTwitter()">Sign in with Twitter</button>
 		  <span class="radio">
 			  <span class="pref">American English <input type="radio" value="american" name="pref" (click)="getLanguage($event)")/></span>
 			  <span class="pref">British English <input type="radio" value="british" name="pref" checked="checked" (click)="getLanguage($event)")/></span>
 		  </span>
 		</div>
 	  <div class="message-input">
-	  	<input [hidden]="!loggedIn" #messagetext (keyup)="doneTyping($event)" placeholder="Enter a message...">
+	  	<input [hidden]="!isLoggedIn" #messagetext (keyup)="doneTyping($event)" placeholder="Enter a message...">
 	  </div>
 	  <ul class="messages-list">
 		  <li *ng-for="#message of firebaseUrl | firebaseevent: 'child_added'">
@@ -30,7 +30,7 @@ import {translations} from './translations';
 class MessageList {
 	langPref: string;
 	messagesRef: Firebase;
-	loggedIn: boolean;
+	isLoggedIn: boolean;
 	authData: any;
 	firebaseUrl: string;
 	constructor() {
@@ -39,8 +39,15 @@ class MessageList {
 		this.messagesRef = new Firebase(this.firebaseUrl);
 		this.messagesRef.onAuth((user) => {
 			if (user) {
-				this.loggedIn = true;
+				this.isLoggedIn = true;
 				this.authData = user;
+			}
+		});
+	}
+	authWithTwitter() {
+		this.messagesRef.authWithOAuthPopup("twitter", (error) => {
+			if (error) {
+				console.log(error);
 			}
 		});
 	}
@@ -82,13 +89,6 @@ class MessageList {
 		this.messagesRef.push({
 			name: this.authData.twitter.username,
 			text: newString
-		});
-	}
-	authWithTwitter() {
-		this.messagesRef.authWithOAuthPopup("twitter", (error) => {
-			if (error) {
-				console.log(error);
-			}
 		});
 	}
 }

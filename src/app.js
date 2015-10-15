@@ -21,11 +21,18 @@ var MessageList = (function () {
         this.messagesRef = new Firebase(this.firebaseUrl);
         this.messagesRef.onAuth(function (user) {
             if (user) {
-                _this.loggedIn = true;
+                _this.isLoggedIn = true;
                 _this.authData = user;
             }
         });
     }
+    MessageList.prototype.authWithTwitter = function () {
+        this.messagesRef.authWithOAuthPopup("twitter", function (error) {
+            if (error) {
+                console.log(error);
+            }
+        });
+    };
     MessageList.prototype.translate = function (message) {
         var translatedString = message;
         var startLang = this.langPref;
@@ -66,19 +73,12 @@ var MessageList = (function () {
             text: newString
         });
     };
-    MessageList.prototype.authWithTwitter = function () {
-        this.messagesRef.authWithOAuthPopup("twitter", function (error) {
-            if (error) {
-                console.log(error);
-            }
-        });
-    };
     MessageList = __decorate([
         angular2_1.Component({
             selector: 'display'
         }),
         angular2_1.View({
-            template: "\n\t  \t<div>\n\t\t  <button [hidden]=\"loggedIn\" class=\"twitter\" (click)=\"authWithTwitter()\">Sign in with Twitter</button>\n\t\t  <span class=\"radio\">\n\t\t\t  <span class=\"pref\">American English <input type=\"radio\" value=\"american\" name=\"pref\" (click)=\"getLanguage($event)\")/></span>\n\t\t\t  <span class=\"pref\">British English <input type=\"radio\" value=\"british\" name=\"pref\" checked=\"checked\" (click)=\"getLanguage($event)\")/></span>\n\t\t  </span>\n\t\t</div>\n\t  <div class=\"message-input\">\n\t  \t<input [hidden]=\"!loggedIn\" #messagetext (keyup)=\"doneTyping($event)\" placeholder=\"Enter a message...\">\n\t  </div>\n\t  <ul class=\"messages-list\">\n\t\t  <li *ng-for=\"#message of firebaseUrl | firebaseevent: 'child_added'\">\n\t\t  \t<strong>{{message.name}}</strong>: {{message.text}}\n\t\t  </li>\n\t  </ul>\n\t",
+            template: "\n\t  \t<div>\n\t\t  <button [hidden]=\"isLoggedIn\" class=\"twitter\" (click)=\"authWithTwitter()\">Sign in with Twitter</button>\n\t\t  <span class=\"radio\">\n\t\t\t  <span class=\"pref\">American English <input type=\"radio\" value=\"american\" name=\"pref\" (click)=\"getLanguage($event)\")/></span>\n\t\t\t  <span class=\"pref\">British English <input type=\"radio\" value=\"british\" name=\"pref\" checked=\"checked\" (click)=\"getLanguage($event)\")/></span>\n\t\t  </span>\n\t\t</div>\n\t  <div class=\"message-input\">\n\t  \t<input [hidden]=\"!isLoggedIn\" #messagetext (keyup)=\"doneTyping($event)\" placeholder=\"Enter a message...\">\n\t  </div>\n\t  <ul class=\"messages-list\">\n\t\t  <li *ng-for=\"#message of firebaseUrl | firebaseevent: 'child_added'\">\n\t\t  \t<strong>{{message.name}}</strong>: {{message.text}}\n\t\t  </li>\n\t  </ul>\n\t",
             directives: [angular2_1.NgFor],
             pipes: [firebasepipe_1.FirebaseEventPipe]
         }), 
