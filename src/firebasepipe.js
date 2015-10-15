@@ -19,10 +19,6 @@ var angular2_1 = require('angular2/angular2');
 })(exports.ALLOWED_FIREBASE_EVENTS || (exports.ALLOWED_FIREBASE_EVENTS = {}));
 var ALLOWED_FIREBASE_EVENTS = exports.ALLOWED_FIREBASE_EVENTS;
 ;
-//TODO: create new reference if input string changes
-//TODO: support once instead of on
-//TODO: handle different events differently (like child_added)
-//TODO: Should event be allowed to change?
 var FirebaseEventPipe = (function () {
     function FirebaseEventPipe(cdRef) {
         this._cdRef = cdRef;
@@ -78,7 +74,7 @@ var FirebaseEventPipe = (function () {
             name: 'firebaseevent'
         }),
         __param(0, angular2_1.Inject(angular2_1.ChangeDetectorRef)), 
-        __metadata('design:paramtypes', [Object])
+        __metadata('design:paramtypes', [angular2_1.ChangeDetectorRef])
     ], FirebaseEventPipe);
     return FirebaseEventPipe;
 })();
