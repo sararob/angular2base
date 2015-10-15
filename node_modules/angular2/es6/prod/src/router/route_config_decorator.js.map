@@ -1,1 +1,0 @@
-{"version":3,"file":"route_config_decorator.js","sourceRoot":"./","sources":["angular2/src/router/route_config_decorator.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,oCAAoC,EAAkB,MAAM,qBAAqB,CAAC;AAC1F,OAAO,EAAC,aAAa,EAAC,MAAM,8BAA8B,CAAC;AAG3D,SACE,KAAK,EACL,QAAQ,EACR,QAAQ,EACR,UAAU,EAEV,UAAU,8BACiB;AAC7B,WAAW,WAAW,GAClB,aAAa,CAAC,qBAAqB,CAAC,CAAC"}

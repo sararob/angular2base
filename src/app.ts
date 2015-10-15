@@ -1,17 +1,18 @@
-/// <reference path="../node_modules/angular2/bundles/typings/angular2/angular2.d.ts" />
+declare var require;
+require('zone.js');
+require('reflect-metadata');
+
 import {Component, View, bootstrap, NgFor} from 'angular2/angular2';
 import {FirebaseEventPipe} from './firebasepipe';
 import {translations} from './translations';
 @Component({
-	selector: 'display'
-})
-@View({
+	selector: 'display',
 	template: `
 	  	<div>
 		  <button [hidden]="isLoggedIn" class="twitter" (click)="authWithTwitter()">Sign in with Twitter</button>
 		  <span class="radio">
-			  <span class="pref">American English <input type="radio" value="american" name="pref" (click)="getLanguage($event)")/></span>
-			  <span class="pref">British English <input type="radio" value="british" name="pref" checked="checked" (click)="getLanguage($event)")/></span>
+			  <span class="pref">American English <input type="radio" value="american" name="pref" (click)="getLanguage($event)"/></span>
+			  <span class="pref">British English <input type="radio" value="british" name="pref" checked="checked" (click)="getLanguage($event)"/></span>
 		  </span>
 		</div>
 	  <div class="message-input">
@@ -26,7 +27,6 @@ import {translations} from './translations';
 	directives: [NgFor],
 	pipes: [FirebaseEventPipe]
 })
-
 class MessageList {
 	langPref: string;
 	messagesRef: Firebase;

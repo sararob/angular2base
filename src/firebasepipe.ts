@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ON_PUSH, Inject, Pipe, View, WrappedValue, bind, bootstrap} from 'angular2/angular2';
+import {ChangeDetectorRef, Component, Inject, Pipe, View, WrappedValue, bind, bootstrap} from 'angular2/angular2';
 
 export enum ALLOWED_FIREBASE_EVENTS {value, child_added};
 
@@ -22,12 +22,12 @@ export class FirebaseEventPipe {
           // Wait to create array until value exists
           if (!this._latestValue) this._latestValue = [];
           this._latestValue.push(snapshot.val());
-          this._cdRef.requestCheck();
+          this._cdRef.markForCheck();
         });
       } else {
         this._fbRef.on(event, snapshot => {
           this._latestValue = snapshot.val();
-          this._cdRef.requestCheck();
+          this._cdRef.markForCheck();
         });
       }
 
