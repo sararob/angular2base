@@ -2,10 +2,6 @@ import {ChangeDetectorRef, Component, ON_PUSH, Inject, Pipe, View, WrappedValue,
 
 export enum ALLOWED_FIREBASE_EVENTS {value, child_added};
 
-//TODO: create new reference if input string changes
-//TODO: support once instead of on
-//TODO: handle different events differently (like child_added)
-//TODO: Should event be allowed to change?
 @Pipe({
   name: 'firebaseevent'
 })

@@ -12,16 +12,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 /// <reference path="../node_modules/angular2/bundles/typings/angular2/angular2.d.ts" />
 var angular2_1 = require('angular2/angular2');
 var firebasepipe_1 = require('./firebasepipe');
+var translations_1 = require('./translations');
 var MessageList = (function () {
     function MessageList() {
         var _this = this;
-        this.messages = {};
         this.langPref = "british";
-        this.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
+        this.firebaseUrl = "https://angular-connect.firebaseio.com/messages";
+        this.messagesRef = new Firebase(this.firebaseUrl);
         this.messagesRef.onAuth(function (user) {
             if (user) {
-                _this.authData = user;
                 _this.loggedIn = true;
+                _this.authData = user;
             }
         });
     }
@@ -35,8 +36,8 @@ var MessageList = (function () {
         else {
             endLang = "british";
         }
-        for (var word in translations) {
-            var entry = translations[word];
+        for (var word in translations_1.translations) {
+            var entry = translations_1.translations[word];
             var wordToReplace = entry[startLang];
             var indexOfString = translatedString.indexOf(wordToReplace);
             if (indexOfString > -1) {
@@ -60,25 +61,24 @@ var MessageList = (function () {
     };
     MessageList.prototype.addMessage = function (message) {
         var newString = this.translate(message);
-        if (this.authData) {
-            this.messagesRef.push({
-                name: this.authData.twitter.username,
-                text: newString
-            });
-        }
-        else {
-            console.log("You must login to post");
-        }
+        this.messagesRef.push({
+            name: this.authData.twitter.username,
+            text: newString
+        });
     };
     MessageList.prototype.authWithTwitter = function () {
-        this.messagesRef.authWithOAuthPopup("twitter", function () { });
+        this.messagesRef.authWithOAuthPopup("twitter", function (error) {
+            if (error) {
+                console.log(error);
+            }
+        });
     };
     MessageList = __decorate([
         angular2_1.Component({
             selector: 'display'
         }),
         angular2_1.View({
-            template: "\n\t  \t<div>\n\t\t  <button [hidden]=\"loggedIn\" class=\"twitter\" (click)=\"authWithTwitter()\">Sign in with Twitter</button>\n\t\t  <span class=\"radio\">\n\t\t\t  <span class=\"pref\">American English <input type=\"radio\" value=\"american\" name=\"pref\" (click)=\"getLanguage($event)\")/></span>\n\t\t\t  <span class=\"pref\">British English <input type=\"radio\" value=\"british\" name=\"pref\" checked=\"checked\" (click)=\"getLanguage($event)\")/></span>\n\t\t  </span>\n\t\t</div>\n\t  <div class=\"message-input\">\n\t  \t<input [hidden]=\"!loggedIn\" #messagetext (keyup)=\"doneTyping($event)\" placeholder=\"Enter a message...\">\n\t  </div>\n\t  <ul class=\"messages-list\">\n\t\t  <li *ng-for=\"#key of 'https://angular-connect.firebaseio.com/messages' | firebaseevent: 'child_added'\">\n\t\t  \t<strong>{{key.name}}</strong>: {{key.text}}\n\t\t  </li>\n\t  </ul>\n\t",
+            template: "\n\t  \t<div>\n\t\t  <button [hidden]=\"loggedIn\" class=\"twitter\" (click)=\"authWithTwitter()\">Sign in with Twitter</button>\n\t\t  <span class=\"radio\">\n\t\t\t  <span class=\"pref\">American English <input type=\"radio\" value=\"american\" name=\"pref\" (click)=\"getLanguage($event)\")/></span>\n\t\t\t  <span class=\"pref\">British English <input type=\"radio\" value=\"british\" name=\"pref\" checked=\"checked\" (click)=\"getLanguage($event)\")/></span>\n\t\t  </span>\n\t\t</div>\n\t  <div class=\"message-input\">\n\t  \t<input [hidden]=\"!loggedIn\" #messagetext (keyup)=\"doneTyping($event)\" placeholder=\"Enter a message...\">\n\t  </div>\n\t  <ul class=\"messages-list\">\n\t\t  <li *ng-for=\"#message of firebaseUrl | firebaseevent: 'child_added'\">\n\t\t  \t<strong>{{message.name}}</strong>: {{message.text}}\n\t\t  </li>\n\t  </ul>\n\t",
             directives: [angular2_1.NgFor],
             pipes: [firebasepipe_1.FirebaseEventPipe]
         }), 

@@ -1,6 +1,7 @@
 /// <reference path="../node_modules/angular2/bundles/typings/angular2/angular2.d.ts" />
 import {Component, View, bootstrap, NgFor} from 'angular2/angular2';
 import {FirebaseEventPipe} from './firebasepipe';
+import {translations} from './translations';
 @Component({
 	selector: 'display'
 })
@@ -17,8 +18,8 @@ import {FirebaseEventPipe} from './firebasepipe';
 	  	<input [hidden]="!loggedIn" #messagetext (keyup)="doneTyping($event)" placeholder="Enter a message...">
 	  </div>
 	  <ul class="messages-list">
-		  <li *ng-for="#key of 'https://angular-connect.firebaseio.com/messages' | firebaseevent: 'child_added'">
-		  	<strong>{{key.name}}</strong>: {{key.text}}
+		  <li *ng-for="#message of firebaseUrl | firebaseevent: 'child_added'">
+		  	<strong>{{message.name}}</strong>: {{message.text}}
 		  </li>
 	  </ul>
 	`,
@@ -27,19 +28,19 @@ import {FirebaseEventPipe} from './firebasepipe';
 })
 
 class MessageList {
-	authData: Object;
 	langPref: string;
-	loggedIn: boolean;
-	translations: Object;
 	messagesRef: Firebase;
+	loggedIn: boolean;
+	authData: any;
+	firebaseUrl: string;
 	constructor() {
-		this.messages = {};
 		this.langPref = "british";
-		this.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
+		this.firebaseUrl = "https://angular-connect.firebaseio.com/messages";
+		this.messagesRef = new Firebase(this.firebaseUrl);
 		this.messagesRef.onAuth((user) => {
 			if (user) {
-				this.authData = user;
 				this.loggedIn = true;
+				this.authData = user;
 			}
 		});
 	}
@@ -78,17 +79,17 @@ class MessageList {
 	}
 	addMessage(message: string) {
 		var newString = this.translate(message);
-		if (this.authData) {
-			this.messagesRef.push({
-				name: this.authData.twitter.username,
-				text: newString
-			});
-		} else {
-			console.log("You must login to post");
-		}
+		this.messagesRef.push({
+			name: this.authData.twitter.username,
+			text: newString
+		});
 	}
 	authWithTwitter() {
-		this.messagesRef.authWithOAuthPopup("twitter", () => {});
+		this.messagesRef.authWithOAuthPopup("twitter", (error) => {
+			if (error) {
+				console.log(error);
+			}
+		});
 	}
 }
 bootstrap(MessageList);
