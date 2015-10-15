@@ -3,7 +3,8 @@ import {ChangeDetectorRef, Component, Inject, Pipe, View, WrappedValue, bind, bo
 export enum ALLOWED_FIREBASE_EVENTS {value, child_added};
 
 @Pipe({
-  name: 'firebaseevent'
+  name: 'firebaseevent',
+  pure: false
 })
 export class FirebaseEventPipe {
   private _cdRef:ChangeDetectorRef;
@@ -22,6 +23,7 @@ export class FirebaseEventPipe {
           // Wait to create array until value exists
           if (!this._latestValue) this._latestValue = [];
           this._latestValue.push(snapshot.val());
+
           this._cdRef.markForCheck();
         });
       } else {
