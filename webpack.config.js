@@ -13,7 +13,7 @@ module.exports = {
 
   entry: './src/app.ts',
   output: {
-    path: __dirname + "/src",
+    path: __dirname + "/dist",
     publicPath: 'dist/',
     filename: "bundle.js"
   },

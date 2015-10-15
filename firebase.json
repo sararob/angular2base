@@ -1,9 +1,12 @@
 {
   "firebase": "angular-connect",
-  "public": "src/",
+  "public": ".",
   "ignore": [
     "firebase.json",
     "**/.*",
-    "**/node_modules/**"
+    "node_modules/**",
+    "tsconfig.json",
+    "package.json",
+    "README.md"
   ]
 }

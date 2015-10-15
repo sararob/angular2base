@@ -1,6 +1,11 @@
 {
   "name": "getting-started",
   "version": "0.0.1",
+  "scripts": {
+    "serve": "./node_modules/.bin/webpack-dev-server",
+    "deploy": "./node_modules/.bin/firebase deploy",
+    "build": "./node_modules/.bin/webpack"
+  },
   "dependencies": {
     "angular2": "2.0.0-alpha.42",
     "es6-module-loader": "^0.16",
@@ -13,5 +18,9 @@
     "webpack-dev-server": "^1.12.0",
     "webpack-livereload-plugin": "^0.4.0",
     "zone.js": "^0.5.8"
+  },
+  "devDependencies": {
+    "firebase-cli": "^1.2.0",
+    "firebase-tools": "^2.0.0"
   }
 }
