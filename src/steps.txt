@@ -1,111 +1,106 @@
-2. Add Firebase + Firebase Pipe
+1. Explain app and show `npm run serve` command
 
-	import {FirebaseEventPipe} from './firebasepipe';
+2. Add Firebase URL + ref (replace messagesArray)
 
-	pipes: [FirebaseEventPipe]
-
+	firbaseUrl: string;
 	messagesRef: Firebase;
 
-	self.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
-
-
+	this.firebaseUrl = "https://angular-connect.firebaseio.com/messages";
+	this.messagesRef = new Firebase(this.firebaseUrl);
 
 3. Add authentication:
 
-	self.loggedIn = false;
-	self.authData: Object;
+	isLoggedIn: boolean;
+	authData: any;
 
 Implement authWithTwitter function:
 
 	authWithTwitter() {
-		this.messagesRef.authWithOAuthPopup("twitter", function(error, user) {
+		this.messagesRef.authWithOAuthPopup("twitter", (error) => {
 			if (error) {
 				console.log(error);
-			} else if (user) {
-				this.authData = user;
 			}
 		});
 	}
 
 Add onAuth to constructor() and demo authenticating:
 
-	self.messagesRef.onAuth(function(user) {
+	this.messagesRef.onAuth((user) => {
 		if (user) {
-			self.authData = user;
-			self.loggedIn = true;
-			console.log(user);
+			this.authData = user;
+			this.loggedIn = true;
 		}
 	});
 
-Add [hidden]="!loggedIn" to <input>
+Add [hidden]="!isLoggedIn" to <input> and show in the browser
 
 4. Store chat messages in Firebase. Change addMessage function to push() username and message data to Firebase:
 
-	if (this.authData) {
-		this.messagesRef.push({
-			name: this.authData.twitter.username,
-			text: message
-		});
-	} else {
-		alert("You must log in with Twitter to post!");
-	}
+	this.messagesRef.push({
+		name: this.authData.twitter.username,
+		text: message
+	});
 
 5. Add the Firebase pipe to our template!
 
-  	<li *ng-for="#key of 'https://angular-connect.firebaseio.com/messages' | firebaseevent:'child_added'">
-  		<strong>{{key.name}}</strong>: {{key.text}}
+  	<li *ng-for="#key of firebaseUrl | firebaseevent:'child_added'">
+  		<strong>{{message.name}}</strong>: {{message.text}}
   	</li>
+
+------
 
 Finished TS:
 
-----
+declare var require;
+require('zone.js');
+require('reflect-metadata');
 
-/// <reference path="../node_modules/angular2/bundles/typings/angular2/angular2.d.ts" />
 import {Component, View, bootstrap, NgFor} from 'angular2/angular2';
 import {FirebaseEventPipe} from './firebasepipe';
+import {translations} from './translations';
 @Component({
-	selector: 'display'
-})
-@View({
+	selector: 'display',
 	template: `
 	  	<div>
-		  <button [hidden]="loggedIn" class="twitter" (click)="authWithTwitter()">Sign in with Twitter</button>
+		  <button [hidden]="isLoggedIn" class="twitter" (click)="authWithTwitter()">Sign in with Twitter</button>
 		  <span class="radio">
-			  <span class="pref">American English <input type="radio" value="american" name="pref" (click)="getLanguage($event)")/></span>
-			  <span class="pref">British English <input type="radio" value="british" name="pref" checked="checked" (click)="getLanguage($event)")/></span>
+			  <span class="pref">American English <input type="radio" value="american" name="pref" (click)="getLanguage($event)"/></span>
+			  <span class="pref">British English <input type="radio" value="british" name="pref" checked="checked" (click)="getLanguage($event)"/></span>
 		  </span>
 		</div>
 	  <div class="message-input">
-	  	<input [hidden]="!loggedIn" #messagetext (keyup)="doneTyping($event)" placeholder="Enter a message...">
+	  	<input [hidden]="!isLoggedIn" #messagetext (keyup)="doneTyping($event)" placeholder="Enter a message...">
 	  </div>
 	  <ul class="messages-list">
-	  	<li *ng-for="#key of 'https://angular-connect.firebaseio.com/messages' | firebaseevent:'child_added'">
-	  		<strong>{{key.name}}</strong>: {{key.text}}
-	  	</li>
+		  <li *ng-for="#message of firebaseUrl | firebaseevent: 'child_added'">
+		  	<strong>{{message.name}}</strong>: {{message.text}}
+		  </li>
 	  </ul>
 	`,
 	directives: [NgFor],
-  	pipes: [FirebaseEventPipe]
+	pipes: [FirebaseEventPipe]
 })
-
 class MessageList {
-	messagesRef: Firebase;
-	authData: Object;
 	langPref: string;
-	loggedIn: boolean;
-	translations: Object;
+	firebaseUrl: string;
+	messagesRef: Firebase;
+	isLoggedIn: boolean;
+	authData: any;
 	constructor() {
-		var self = this;
-		self.messages = {};
-		self.langPref = "british";
-		self.messagesArray = [];
-		self.messagesRef = new Firebase("https://angular-connect.firebaseio.com/messages");
-		self.authData = null;
-		self.loggedIn = false;
-		self.messagesRef.onAuth(function(user) {
+		this.langPref = "british";
+		this.firebaseUrl = "https://angular-connect.firebaseio.com/messages";
+		this.messagesRef = new Firebase(this.firebaseUrl);
+		this.messagesRef.onAuth((user) => {
 			if (user) {
-				self.authData = user;
-				self.loggedIn = true;
+				this.authData = user;
+				this.isLoggedIn = true;
+			}
+		});
+	}
+	authWithTwitter() {
+		this.messagesRef.authWithOAuthPopup("twitter", (error) => {
+			if (error) {
+				console.log(error);
 			}
 		});
 	}
@@ -144,26 +139,12 @@ class MessageList {
 	}
 	addMessage(message: string) {
 		var newString = this.translate(message);
-		if (this.authData) {
-			this.messagesRef.push({
-				name: this.authData.twitter.username,
-				text: newString
-			});
-		} else {
-			alert("You must log in with Twitter to post!");
-		}
-	}
-	authWithTwitter() {
-		this.messagesRef.authWithOAuthPopup("twitter", function(error, user) {
-			this.authData = user;
+		this.messagesRef.push({
+			name: this.authData.twitter.username,
+			text: newString
 		});
 	}
 }
-
-interface Dictionary {
-	[ index: string ]: string
-}
-
 bootstrap(MessageList);
 
 
