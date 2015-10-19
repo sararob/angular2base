@@ -19,7 +19,7 @@ import {translations} from './translations';
 	  	<input [hidden]="!isLoggedIn" #messagetext (keyup)="doneTyping($event)" placeholder="Enter a message...">
 	  </div>
 	  <ul class="messages-list">
-		  <li *ng-for="#message of firebaseUrl | firebaseevent: 'child_added'">
+		  <li *ng-for="#message of firebaseUrl | firebaseevent:'child_added'">
 		  	<strong>{{message.name}}</strong>: {{message.text}}
 		  </li>
 	  </ul>
@@ -29,18 +29,18 @@ import {translations} from './translations';
 })
 class MessageList {
 	langPref: string;
+	firebaseUrl: string;
 	messagesRef: Firebase;
 	isLoggedIn: boolean;
 	authData: any;
-	firebaseUrl: string;
 	constructor() {
 		this.langPref = "british";
 		this.firebaseUrl = "https://angular-connect.firebaseio.com/messages";
 		this.messagesRef = new Firebase(this.firebaseUrl);
 		this.messagesRef.onAuth((user) => {
 			if (user) {
-				this.isLoggedIn = true;
 				this.authData = user;
+				this.isLoggedIn = true;
 			}
 		});
 	}

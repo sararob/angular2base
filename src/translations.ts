@@ -90,5 +90,9 @@ export var translations: any = {
 	"22": {
 		"american": "organize",
 		"british": "organise"
+	},
+	"23": {
+		"american": "sausage",
+		"british": "black pudding"
 	}
 }
