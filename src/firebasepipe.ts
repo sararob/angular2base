@@ -1,4 +1,5 @@
-import {ChangeDetectorRef, Component, Inject, Pipe, View, WrappedValue, bind, bootstrap} from 'angular2/angular2';
+import {ChangeDetectorRef, Component, Inject, Pipe, View, WrappedValue, bind} from 'angular2/core';
+import {bootstrap} from 'angular2/platform/browser'
 
 export enum ALLOWED_FIREBASE_EVENTS {value, child_added};
 

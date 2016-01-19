@@ -2,7 +2,8 @@ declare var require;
 require('zone.js');
 require('reflect-metadata');
 
-import {Component, View, bootstrap, NgFor} from 'angular2/angular2';
+import {Component, View} from 'angular2/core';
+import {bootstrap} from 'angular2/platform/browser'
 import {FirebaseEventPipe} from './firebasepipe';
 import {translations} from './translations';
 @Component({
@@ -24,7 +25,6 @@ import {translations} from './translations';
 		  </li>
 	  </ul>
 	`,
-	directives: [NgFor],
 	pipes: [FirebaseEventPipe]
 })
 class MessageList {

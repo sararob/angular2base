@@ -94,5 +94,9 @@ export var translations: any = {
 	"23": {
 		"american": "sausage",
 		"british": "black pudding"
+	},
+	"24": {
+		"american": "bye",
+		"british": "toodloo"
 	}
 }
